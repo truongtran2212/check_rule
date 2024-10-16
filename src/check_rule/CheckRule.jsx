@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Select, Button, Form, Input, Row, Col } from 'antd';
-
 const { Option } = Select;
+
 const CheckRule = () => {
     const conditionCheckAction = ["", null, undefined]
     const listIndex = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -84,7 +84,7 @@ const CheckRule = () => {
             group3: conditions[2],
             then: action
         }
-        console.log(dataJson)
+        console.log(JSON.stringify(dataJson))
     };
 
     const changeTextAndOr = (value, index) => {
@@ -136,25 +136,155 @@ const CheckRule = () => {
     return (
         <div className='container-create-rule'>
             <div className='body-create-rule'>
-                <h2>Tạo quy tắc</h2>
-                <Row style={{ display: "flex", width: "100%" }}>
-                    <Col span={2}>
-                        {<p style={{ margin: 0 }}>Nếu: </p>}
-                    </Col>
-                    <Col span={22} style={{ display: "grid", rowGap: "2ch" }}>
-                        {conditions.map((condition, index) => (
-                            <>
-                                <div style={{ columnGap: "0.5ch", display: "flex" }}>
-                                    <Row style={{ display: "contents" }}>
+                    <h2>Tạo quy tắc</h2>
+                    <Form className='form-rule' layout="vertical" >
+                        <Row style={{ display: "flex", width: "100%" }}>
+                            <Col span={3}>
+                                {<p style={{ margin: 0 }}>Nếu: </p>}
+                            </Col>
+                            <Col span={21} style={{ display: "grid", rowGap: "2ch" }}>
+                                {conditions.map((condition, index) => (
+                                    <>
+                                        <div style={{ columnGap: "0.5ch", display: "flex" }}>
+                                            <Row style={{ display: "contents" }}>
+                                                <Form.Item>
+                                                    <Input
+                                                        value={condition.no}
+                                                        onChange={(val) => handleConditionChange(index, 'no', val)}
+                                                        placeholder='VD: N20'
+                                                    />
+                                                </Form.Item>
+                                                <Form.Item>
+                                                    <Select
+                                                        value={condition.operator}
+                                                        onChange={(val) => handleConditionChange(index, 'operator', val)}
+                                                    >
+                                                        <Option value=">=">&ge;</Option>
+                                                        <Option value="<=">&le;</Option>
+                                                        <Option value=">">&gt;</Option>
+                                                        <Option value="<">&lt;</Option>
+                                                        <Option value="=">=</Option>
+                                                        <Option value="<>">{"<>"}</Option>
+                                                        <Option value="IN">IN</Option>
+                                                    </Select>
+                                                </Form.Item>
+                                                <Form.Item>
+                                                    <div style={{ display: "grid", rowGap: "0.5ch", alignContent: "space-between" }}>
+                                                        <Input
+                                                            value={condition.value}
+                                                            placeholder='VD: N20'
+                                                            onChange={(val) => handleConditionChange(index, 'value', val)}
+                                                            style={{ width: 100 }}
+                                                        />
+                                                        {condition.operator === "IN" &&
+                                                            <label style={{ marginLeft: "auto" }}>
+                                                                <span style={{ marginRight: '6px' }}>Poi:</span>
+                                                                <Select
+                                                                    onChange={(val) => handleConditionChange(index, 'poi', val)}
+                                                                    style={{ textAlign: "end", width: "fit-content" }}
+                                                                >
+                                                                    {listIndex.map(item => (
+                                                                        <Option key={item} value={item}>{item}</Option>
+                                                                    ))}
+                                                                </Select>
+                                                            </label>
+                                                        }
+                                                    </div>
+                                                </Form.Item>
+                                            </Row>
+
+                                            <Select
+                                                value={condition.connect}
+                                                onChange={(val) => handleConditionChange(index, 'connect', val)}
+                                                style={{ width: 80 }}
+
+                                            >
+                                                <Option value="AND">AND</Option>
+                                                <Option value="OR">OR</Option>
+                                            </Select>
+
+                                            <Row style={{ display: "contents" }}>
+                                                <Form.Item>
+                                                    <Input
+                                                        value={condition.noChild}
+                                                        onChange={(val) => handleConditionChange(index, 'noChild', val)}
+                                                        placeholder='VD: N20'
+                                                    />
+                                                </Form.Item>
+                                                <Form.Item>
+                                                    <Select
+                                                        value={condition.operatorChild}
+                                                        onChange={(val) => handleConditionChange(index, 'operatorChild', val)}
+                                                    >
+                                                        <Option value=">=">&ge;</Option>
+                                                        <Option value="<=">&le;</Option>
+                                                        <Option value=">">&gt;</Option>
+                                                        <Option value="<">&lt;</Option>
+                                                        <Option value="=">=</Option>
+                                                        <Option value="<>">{"<>"}</Option>
+                                                        <Option value="IN">IN</Option>
+                                                    </Select>
+                                                </Form.Item>
+                                                <Form.Item>
+                                                    <div style={{ display: "grid", rowGap: "0.5ch", alignContent: "space-between" }}>
+                                                        <Input
+                                                            value={condition.valueChild}
+                                                            placeholder='VD: N20'
+                                                            onChange={(val) => handleConditionChange(index, 'valueChild', val)}
+                                                            style={{ width: 100 }}
+                                                        />
+                                                        {condition.operatorChild === "IN" &&
+                                                            <label style={{ marginLeft: "auto" }}>
+                                                                <span style={{ marginRight: '6px' }}>Poi:</span>
+                                                                <Select
+                                                                    onChange={(val) => handleConditionChange(index, 'poiChild', val)}
+                                                                    style={{ textAlign: "end", width: "fit-content" }}
+                                                                >
+                                                                    {listIndex.map(item => (
+                                                                        <Option key={item} value={item}>{item}</Option>
+                                                                    ))}
+                                                                </Select>
+                                                            </label>
+                                                        }
+                                                    </div>
+                                                </Form.Item>
+                                            </Row>
+                                        </div>
+
+                                        {index < conditions.length - 1 &&
+                                            <Select
+                                                value={listTextAndOr[index]}
+                                                onChange={(value) => changeTextAndOr(value, index)}
+                                                style={{ width: 80 }}
+
+                                            >
+                                                <Option value="AND">AND</Option>
+                                                <Option value="OR">OR</Option>
+                                            </Select>}
+                                    </>
+                                ))}
+                            </Col>
+                        </Row>
+                    </Form>
+
+                    <Row>
+                        <Col span={3}>
+                            Thì:
+                        </Col>
+                        <Col span={21} style={{ display: "flex", columnGap: "1ch" }}>
+                            <div style={{ columnGap: "0.5ch", display: "flex" }}>
+                                <Row style={{ display: "contents" }}>
+                                    <Form.Item>
                                         <Input
-                                            value={condition.no}
-                                            onChange={(val) => handleConditionChange(index, 'no', val)}
+                                            value={action.no}
+                                            onChange={(val) => handleActionChange('no', val)}
                                             placeholder='VD: N20'
                                         />
-
+                                    </Form.Item>
+                                    <Form.Item>
                                         <Select
-                                            value={condition.operator}
-                                            onChange={(val) => handleConditionChange(index, 'operator', val)}
+                                            value={action.operator}
+                                            onChange={(val) => handleActionChange('operator', val)}
                                         >
                                             <Option value=">=">&ge;</Option>
                                             <Option value="<=">&le;</Option>
@@ -164,190 +294,72 @@ const CheckRule = () => {
                                             <Option value="<>">{"<>"}</Option>
                                             <Option value="IN">IN</Option>
                                         </Select>
-
+                                    </Form.Item>
+                                    <Form.Item>
                                         <div style={{ display: "grid", rowGap: "0.5ch", alignContent: "space-between" }}>
                                             <Input
-                                                value={condition.value}
+                                                value={action.value}
                                                 placeholder='VD: N20'
-                                                onChange={(val) => handleConditionChange(index, 'value', val)}
+                                                onChange={(val) => handleActionChange('value', val)}
                                                 style={{ width: 100 }}
                                             />
-                                            {condition.operator === "IN" &&
-                                                <label style={{ marginLeft: "auto" }}>
-                                                    <span style={{ marginRight: '6px' }}>Poi:</span>
-                                                    <Select
-                                                        onChange={(val) => handleConditionChange(index, 'poi', val)}
-                                                        style={{ textAlign: "end", width: "fit-content" }}
-                                                    >
-                                                        {listIndex.map(item => (
-                                                            <Option key={item} value={item}>{item}</Option>
-                                                        ))}
-                                                    </Select>
-                                                </label>
-                                            }
                                         </div>
-                                    </Row>
-
-                                    <Select
-                                        value={condition.connect}
-                                        onChange={(val) => handleConditionChange(index, 'connect', val)}
-                                        style={{ width: 80 }}
-
-                                    >
-                                        <Option value="AND">AND</Option>
-                                        <Option value="OR">OR</Option>
-                                    </Select>
-
-                                    <Row style={{ display: "contents" }}>
-                                        <Input
-                                            value={condition.noChild}
-                                            onChange={(val) => handleConditionChange(index, 'noChild', val)}
-                                            placeholder='VD: N20'
-                                        />
-
-                                        <Select
-                                            value={condition.operatorChild}
-                                            onChange={(val) => handleConditionChange(index, 'operatorChild', val)}
-                                        >
-                                            <Option value=">=">&ge;</Option>
-                                            <Option value="<=">&le;</Option>
-                                            <Option value=">">&gt;</Option>
-                                            <Option value="<">&lt;</Option>
-                                            <Option value="=">=</Option>
-                                            <Option value="<>">{"<>"}</Option>
-                                            <Option value="IN">IN</Option>
-                                        </Select>
-
-                                        <div style={{ display: "grid", rowGap: "0.5ch", alignContent: "space-between" }}>
-                                            <Input
-                                                value={condition.valueChild}
-                                                placeholder='VD: N20'
-                                                onChange={(val) => handleConditionChange(index, 'valueChild', val)}
-                                                style={{ width: 100 }}
-                                            />
-                                            {condition.operatorChild === "IN" &&
-                                                <label style={{ marginLeft: "auto" }}>
-                                                    <span style={{ marginRight: '6px' }}>Poi:</span>
-                                                    <Select
-                                                        onChange={(val) => handleConditionChange(index, 'poiChild', val)}
-                                                        style={{ textAlign: "end", width: "fit-content" }}
-                                                    >
-                                                        {listIndex.map(item => (
-                                                            <Option key={item} value={item}>{item}</Option>
-                                                        ))}
-                                                    </Select>
-                                                </label>
-                                            }
-                                        </div>
-
-                                    </Row>
-                                </div>
-
-                                {index < conditions.length - 1 &&
-                                    <Select
-                                        value={listTextAndOr[index]}
-                                        onChange={(value) => changeTextAndOr(value, index)}
-                                        style={{ width: 80 }}
-
-                                    >
-                                        <Option value="AND">AND</Option>
-                                        <Option value="OR">OR</Option>
-                                    </Select>}
-                            </>
-                        ))}
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col span={2}>
-                        Thì:
-                    </Col>
-                    <Col span={22} style={{ display: "flex", columnGap: "1ch" }}>
-                        <div style={{ columnGap: "0.5ch", display: "flex" }}>
-                            <Row style={{ display: "contents" }}>
-
-                                <Input
-                                    value={action.no}
-                                    onChange={(val) => handleActionChange('no', val)}
-                                    placeholder='VD: N20'
-                                />
+                                    </Form.Item>
+                                </Row>
 
                                 <Select
-                                    value={action.operator}
-                                    onChange={(val) => handleActionChange('operator', val)}
+                                    value={action.connect}
+                                    onChange={(val) => handleActionChange('connect', val)}
+                                    style={{ width: 80 }}
                                 >
-                                    <Option value=">=">&ge;</Option>
-                                    <Option value="<=">&le;</Option>
-                                    <Option value=">">&gt;</Option>
-                                    <Option value="<">&lt;</Option>
-                                    <Option value="=">=</Option>
-                                    <Option value="<>">{"<>"}</Option>
-                                    <Option value="IN">IN</Option>
+                                    <Option value="AND">AND</Option>
+                                    <Option value="OR">OR</Option>
                                 </Select>
 
-                                <div style={{ display: "grid", rowGap: "0.5ch", alignContent: "space-between" }}>
-                                    <Input
-                                        value={action.value}
-                                        placeholder='VD: N20'
-                                        onChange={(val) => handleActionChange('value', val)}
-                                        style={{ width: 100 }}
-                                    />
-                                </div>
-                            </Row>
+                                <Row style={{ display: "contents" }}>
+                                    <Form.Item>
+                                        <Input
+                                            value={action.noChild}
+                                            onChange={(val) => handleActionChange('noChild', val)}
+                                            placeholder='VD: N20'
+                                        />
+                                    </Form.Item>
+                                    <Form.Item>
+                                        <Select
+                                            value={action.operatorChild}
+                                            onChange={(val) => handleActionChange('operatorChild', val)}
+                                        >
+                                            <Option value=">=">&ge;</Option>
+                                            <Option value="<=">&le;</Option>
+                                            <Option value=">">&gt;</Option>
+                                            <Option value="<">&lt;</Option>
+                                            <Option value="=">=</Option>
+                                            <Option value="<>">{"<>"}</Option>
+                                        </Select>
+                                    </Form.Item>
+                                    <Form.Item>
+                                        <Input
+                                            value={action.valueChild}
+                                            placeholder='VD: N20'
+                                            onChange={(val) => handleActionChange('valueChild', val)}
+                                            style={{ width: 100 }}
+                                        />
+                                    </Form.Item>
+                                </Row>
+                            </div>
+                        </Col>
+                    </Row>
 
-                            <Select
-                                value={action.connect}
-                                onChange={(val) => handleActionChange('connect', val)}
-                                style={{ width: 80 }}
-                            >
-                                <Option value="AND">AND</Option>
-                                <Option value="OR">OR</Option>
-                            </Select>
+                    <p style={{ display: "flex", alignItems: "center" }}>
+                        {showResultCreateRule()}
+                    </p>
 
-                            <Row style={{ display: "contents" }}>
-                                <Form.Item>
-                                    <Input
-                                        value={action.noChild}
-                                        onChange={(val) => handleActionChange('noChild', val)}
-                                        placeholder='VD: N20'
-                                    />
-                                </Form.Item>
-                                <Form.Item>
-                                    <Select
-                                        value={action.operatorChild}
-                                        onChange={(val) => handleActionChange('operatorChild', val)}
-                                    >
-                                        <Option value=">=">&ge;</Option>
-                                        <Option value="<=">&le;</Option>
-                                        <Option value=">">&gt;</Option>
-                                        <Option value="<">&lt;</Option>
-                                        <Option value="=">=</Option>
-                                        <Option value="<>">{"<>"}</Option>
-                                    </Select>
-                                </Form.Item>
-                                <Form.Item>
-                                    <Input
-                                        value={action.valueChild}
-                                        placeholder='VD: N20'
-                                        onChange={(val) => handleActionChange('valueChild', val)}
-                                        style={{ width: 100 }}
-                                    />
-                                </Form.Item>
-                            </Row>
-                        </div>
-                    </Col>
-                </Row>
-
-                <p style={{ display: "flex", alignItems: "center" }}>
-                    {showResultCreateRule()}
-                </p>
-
-                <Button
-                    Button type="primary"
-                    // disabled={conditionCheckAction.includes(action[0]) || conditionCheckAction.includes(action[1])}
-                    onClick={handleSubmit} >
-                    Lưu quy tắc
-                </Button>
+                    <Button
+                        Button type="primary"
+                        // disabled={conditionCheckAction.includes(action[0]) || conditionCheckAction.includes(action[1])}
+                        onClick={handleSubmit} >
+                        Lưu quy tắc
+                    </Button>
             </div>
         </div>
     );
